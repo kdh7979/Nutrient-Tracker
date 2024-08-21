@@ -1,8 +1,9 @@
 from flask import g
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 
-
+Base = declarative_base()
 
 def init_db(database_uri :str):
     engine = create_engine(database_uri)

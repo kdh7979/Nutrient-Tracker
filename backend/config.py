@@ -1,6 +1,6 @@
 class Config:
-    SECRET_KEY = 'your_secret_key 아무거나 넣으면 됨'
-    DATABASE_URI = 'sqlite://./db.sqlite3'
+    SECRET_KEY = 'asdf434sdfh5HEH444dg467689fg'
+    DATABASE_URI = 'sqlite:///./nutrient.db'
     
 
 config = Config()

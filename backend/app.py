@@ -1,11 +1,11 @@
 from flask import Flask, json, request, g
 
 from src.middleware.cors import cors
-from src.database.database import init_db
+from src.database.database import init_db, Base
 from config import config
 
-from src.database.controller import create_user
-from src.database.models import Users
+from src.database.controller import create_user, get_user_by_id, addFoodData, get_nutrient_from_food, findDailyNutrient
+from src.database.models import Users, Foods, Nutrients
 
 
 def init_app():
@@ -20,6 +20,8 @@ def init_app():
 app = init_app()
 engine, get_db = init_db(config.DATABASE_URI)
 
+# 데이터베이스 생성
+Base.metadata.create_all(engine)
 
 # 연결이 끊어질때 db close
 @app.teardown_appcontext
@@ -33,35 +35,41 @@ def teardown_db(exception):
 def status():
     return json.jsonify({'status': 'ok'})
 
-@app.route("/your/backend/endpoints", methods=["GET", "POST"])
-def your_backend_endpoints():
+@app.route("/users/foods", methods=["GET", "POST"])
+def handle_food_data():
     # 여기에 로직을 추가해주세요.
-    if request.method == "GET":
-        return json.jsonify({"method": "GET"})
-    elif request.method == "POST":
-        return json.jsonify({"method": "POST"})
-    
-
-@app.route("/your/backend/endpoints2", methods=["GET", "POST"])
-def your_backend_endpoints2():
-    # 이런식으로 여러개 추가도 가능해요. 함수 이름만 안겹치면 되여.
-    if request.method == "GET":
-        return json.jsonify({"method": "GET"})
-    elif request.method == "POST":
-        return json.jsonify({"method": "POST"})
-    
-
-
-@app.route("/controller/example")
-def controller_example():
-    # 일단 요청 온 데이터들은 모두 저희가 생각했던 타입으로만 온다고 생각하고 코딩해봐요.
     request_data = request.get_json()
-    user = Users(**request_data)
-
+    print(request_data)
     db = get_db()
-    create_user(db, user)
+    if request.method == "GET":
+        res = get_nutrient_from_food(db, request_data["foodId"])
+        return json.jsonify({
+                                "foodId": res[0].food_id,
+                                "calorie": res[0].calorie,
+                                "carbohydrates": res[0].carbohydrates,
+                                "sugar": res[0].sugar,
+                                "protein": res[0].protein,
+                                "fat": res[0].fat,
+                                "saturated_fat": res[0].saturated_fat,
+                                "trans_fat": res[0].trans_fat,
+                                "cholesterol": res[0].cholesterol,
+                                "sodium": res[0].sodium,
+                            })
+    elif request.method == "POST":
+        foodInfo = Foods(request_data["foodInfo"])
+        res = addFoodData(db, request_data['foodInfo'], request_data['nutrients'])
+        return json.jsonify({"commit": res})
+
+# @app.route("/controller/example")
+# def controller_example():
+#     # 일단 요청 온 데이터들은 모두 저희가 생각했던 타입으로만 온다고 생각하고 코딩해봐요.
+#     request_data = request.get_json()
+#     user = Users(**request_data)
+
+#     db = get_db()
+#     create_user(db, user)
     
-    return json.jsonify({"status": "ok"})
+#     return json.jsonify({"status": "ok"})
 
 
 if __name__ == "__main__":
