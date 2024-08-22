@@ -19,20 +19,6 @@ class Users(Base):
 
 
 
-# 여러개도 가능
-# class MatchIds(Base):
-#     __tablename__ = "match_ids" # 중복 안됨
-#     match_id = Column(Integer, primary_key=True, index=True)
-#     riot_match_id = Column(String, nullable=False, unique=True, index=True)
-#     crawled = Column(Boolean, nullable=False, default=False)
-#     crawled_count = Column(Integer, nullable=False, default=0)
-#     region = Column(String, nullable=False)
-    
-#     # 이러면 created_at과 updated_at이 자동으로 생성됨
-#     created_at = Column(DateTime, server_default=current_timestamp())
-#     updated_at = Column(DateTime, server_default=current_timestamp(), onupdate=current_timestamp())
-
-
 
 class Foods(Base):
     __tablename__ = "foods"

@@ -1,6 +1,11 @@
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 class Config:
-    SECRET_KEY = 'asdf434sdfh5HEH444dg467689fg'
-    DATABASE_URI = 'sqlite:///./nutrient.db'
+    SECRET_KEY = os.getenv("SECRET_KEY")
+    DATABASE_URI = os.getenv("DATABASE_URI")
     
 
 config = Config()

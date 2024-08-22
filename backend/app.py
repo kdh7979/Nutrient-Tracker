@@ -14,6 +14,11 @@ def init_app():
 
     # app에 뭔가 더 추가하고 싶은게 있으면 여기에 추가
     cors.init_app(app)
+    
+    @app.before_request
+    def before_request():
+        g.db_session = get_db()
+
 
     return app
 
@@ -56,20 +61,10 @@ def handle_food_data():
                                 "sodium": res[0].sodium,
                             })
     elif request.method == "POST":
-        foodInfo = Foods(request_data["foodInfo"])
+        # foodInfo = Foods(request_data["foodInfo"])
         res = addFoodData(db, request_data['foodInfo'], request_data['nutrients'])
         return json.jsonify({"commit": res})
 
-# @app.route("/controller/example")
-# def controller_example():
-#     # 일단 요청 온 데이터들은 모두 저희가 생각했던 타입으로만 온다고 생각하고 코딩해봐요.
-#     request_data = request.get_json()
-#     user = Users(**request_data)
-
-#     db = get_db()
-#     create_user(db, user)
-    
-#     return json.jsonify({"status": "ok"})
 
 
 if __name__ == "__main__":
